@@ -1,4 +1,5 @@
 import { ArrowUpRight, AtSign, Globe2, Send, Sparkles } from 'lucide-react'
+import Logo from '../Logo'
 import './Footer.css'
 
 const groups = [
@@ -10,7 +11,9 @@ export default function Footer() {
   return <footer className="site-footer" id="privacy">
     <div className="container footer-grid">
       <div className="footer-intro">
-        <a href="#top" className="brand"><span className="brand-mark"><Sparkles size={15}/></span>Mimic</a>
+        <a href="#top" className="brand" style={{ textDecoration: 'none' }}>
+          <Logo variant="horizontal" />
+        </a>
         <p>Thoughtful replies in the voice that makes you, you.</p>
         <a className="footer-email" href="mailto:hello@mimic.ai">hello@mimic.ai <ArrowUpRight size={14}/></a>
       </div>
