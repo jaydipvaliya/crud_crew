@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MessageSquare, AlertCircle } from 'lucide-react';
+import { apiFetch } from '../api';
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ export default function AuthPage() {
         ? { phone_number: phone, password }
         : { phone_number: phone, password, display_name: displayName };
 
-      const response = await fetch(endpoint, {
+      const response = await apiFetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

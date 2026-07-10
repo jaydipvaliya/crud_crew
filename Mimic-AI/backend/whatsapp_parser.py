@@ -7,6 +7,7 @@ import re
 import os
 from flask import Blueprint, request, jsonify, session
 from models import save_chat_export, get_all_chat_exports, get_chat_export
+from auth import get_current_user_id
 
 parser_bp = Blueprint('parser', __name__)
 
@@ -95,7 +96,7 @@ def parse_whatsapp_chat(content):
 @parser_bp.route('/api/upload-chat', methods=['POST'])
 def upload_chat():
     """Upload and parse a WhatsApp chat export file."""
-    user_id = session.get('user_id')
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({'error': 'Not authenticated'}), 401
 
@@ -139,7 +140,7 @@ def upload_chat():
 @parser_bp.route('/api/chat-exports', methods=['GET'])
 def list_exports():
     """List all chat exports for the current user."""
-    user_id = session.get('user_id')
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({'error': 'Not authenticated'}), 401
 
@@ -150,7 +151,7 @@ def list_exports():
 @parser_bp.route('/api/chat-exports/<int:export_id>', methods=['GET'])
 def get_export(export_id):
     """Get a specific chat export."""
-    user_id = session.get('user_id')
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({'error': 'Not authenticated'}), 401
 

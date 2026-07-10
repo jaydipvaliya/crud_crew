@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Upload, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { apiFetch } from '../api';
 
 export function UploadModal({ isOpen, onClose, addToast }) {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -48,7 +49,7 @@ export function UploadModal({ isOpen, onClose, addToast }) {
     setResult(null);
 
     try {
-      const response = await fetch('/api/upload-chat', {
+      const response = await apiFetch('/api/upload-chat', {
         method: 'POST',
         body: formData,
       });

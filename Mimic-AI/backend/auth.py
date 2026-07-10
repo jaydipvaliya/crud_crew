@@ -3,6 +3,17 @@ Authentication routes — register and login with phone number + password.
 """
 
 from flask import Blueprint, request, jsonify, session
+
+
+def get_current_user_id():
+    """Get user ID from X-User-Id header (cross-origin) or session (same-origin)."""
+    user_id = request.headers.get('X-User-Id')
+    if user_id:
+        try:
+            return int(user_id)
+        except (ValueError, TypeError):
+            pass
+    return session.get('user_id')
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import create_user, get_user_by_phone, get_all_users, get_user_by_id
 
@@ -92,7 +103,7 @@ def logout():
 @auth_bp.route('/api/me', methods=['GET'])
 def get_current_user():
     """Get the currently logged-in user."""
-    user_id = session.get('user_id')
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({'error': 'Not authenticated'}), 401
 
@@ -114,7 +125,7 @@ def get_current_user():
 @auth_bp.route('/api/users', methods=['GET'])
 def list_users():
     """List all registered users (for contact list)."""
-    user_id = session.get('user_id')
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({'error': 'Not authenticated'}), 401
 

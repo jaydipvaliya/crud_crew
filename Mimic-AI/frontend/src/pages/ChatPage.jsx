@@ -6,6 +6,7 @@ import { ContactList } from '../components/ContactList';
 import { ChatWindow } from '../components/ChatWindow';
 import { UploadModal } from '../components/UploadModal';
 import { ToastContainer } from '../components/Toast';
+import { apiFetch } from '../api';
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ export default function ChatPage() {
   useEffect(() => {
     async function loadUser() {
       try {
-        const response = await fetch('/api/me');
+        const response = await apiFetch('/api/me');
         if (!response.ok) {
           navigate('/login');
           return;
@@ -229,7 +230,7 @@ export default function ChatPage() {
       socketRef.current = null;
     }
     try {
-      await fetch('/api/logout', { method: 'POST' });
+      await apiFetch('/api/logout', { method: 'POST' });
     } catch (err) {
       console.error(err);
     }
