@@ -19,11 +19,18 @@ app = Flask(__name__, static_folder=None)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'chatapp-secret-key-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
 
-CORS(app)
+# CORS: read allow-list from FRONTEND_URL env var (comma-separated), fallback to "*"
+_frontend_url = os.getenv('FRONTEND_URL', '*')
+if _frontend_url != '*':
+    _allowed_origins = [o.strip() for o in _frontend_url.split(',')]
+else:
+    _allowed_origins = '*'
+
+CORS(app, origins=_allowed_origins)
 
 socketio = SocketIO(
     app,
-    cors_allowed_origins="*",
+    cors_allowed_origins=_allowed_origins,
     async_mode='eventlet',
     manage_session=True,
     ping_timeout=60,
@@ -94,7 +101,7 @@ init_groq()
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
-    debug = os.getenv('FLASK_DEBUG', 'true').lower() == 'true'
+    debug = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
 
     print(f"""\n========================================""")
     print(f"  ChatApp is starting...")

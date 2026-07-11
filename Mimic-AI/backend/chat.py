@@ -144,12 +144,14 @@ def register_socket_events(socketio):
         emit('new_message', message, room=room)
 
         # Also send a notification to the receiver (even if not in the room)
-        emit('message_notification', {
-            'sender_id': user_id,
-            'sender_name': sender['display_name'],
-            'content': content[:50] + ('...' if len(content) > 50 else ''),
-            'unread_count': get_unread_count(user_id, receiver_id)
-        }, broadcast=True)
+        receiver_sid = connected_users.get(receiver_id)
+        if receiver_sid:
+            emit('message_notification', {
+                'sender_id': user_id,
+                'sender_name': sender['display_name'],
+                'content': content[:50] + ('...' if len(content) > 50 else ''),
+                'unread_count': get_unread_count(user_id, receiver_id)
+            }, room=receiver_sid)
 
         # ── AI Stand-In Check ─────────────────────────────────────
         # If receiver is offline and has AI stand-in enabled, generate AI reply
