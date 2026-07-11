@@ -112,7 +112,7 @@ def get_current_user():
         session.clear()
         return jsonify({'error': 'User not found'}), 404
 
-    return jsonify({
+    response = jsonify({
         'user': {
             'id': user['id'],
             'phone_number': user['phone_number'],
@@ -120,6 +120,8 @@ def get_current_user():
             'ai_standin_enabled': bool(user['ai_standin_enabled'])
         }
     })
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response
 
 
 @auth_bp.route('/api/users', methods=['GET'])

@@ -10,7 +10,14 @@ import { apiFetch } from '../api';
 
 export default function ChatPage() {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const raw = localStorage.getItem('chatapp_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
   const [contacts, setContacts] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -91,7 +98,6 @@ export default function ChatPage() {
         : 'https://crud-crew-4a12.onrender.com';
 
     const sock = io(socketUrl, {
-      withCredentials: true,
       transports: ['polling', 'websocket'],
       reconnectionAttempts: 10,
       reconnectionDelay: 1000,
@@ -235,17 +241,14 @@ export default function ChatPage() {
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     if (socketRef.current) {
       socketRef.current.disconnect();
       socketRef.current = null;
     }
-    try {
-      await apiFetch('/api/logout', { method: 'POST' });
-    } catch (err) {
-      console.error(err);
-    }
+    apiFetch('/api/logout', { method: 'POST' }).catch((err) => console.error(err));
     localStorage.removeItem('chatapp_user');
+    setCurrentUser(null);
     navigate('/');
   };
 

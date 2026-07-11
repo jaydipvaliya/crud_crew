@@ -2,6 +2,8 @@
 Main Flask application — ties together auth, chat, AI, and parser modules.
 Serves the frontend and handles all WebSocket connections.
 """
+import eventlet
+eventlet.monkey_patch()
 
 import os
 import sys
